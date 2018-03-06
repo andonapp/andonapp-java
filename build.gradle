@@ -1,0 +1,28 @@
+plugins {
+  id 'io.franzbecker.gradle-lombok' version '1.11'
+  id 'java-library'
+}
+
+group = 'com.andonapp'
+
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+dependencies {
+  api 'com.squareup.okhttp3:okhttp:3.10.0'
+  api 'com.fasterxml.jackson.core:jackson-databind:2.9.4'
+
+  //implementation 'com.google.guava:guava:23.0'
+
+  testImplementation 'junit:junit:4.12'
+}
+
+test {
+  testLogging {
+    events "passed", "skipped", "failed"
+  }
+}
+
+repositories {
+  mavenCentral()
+}
