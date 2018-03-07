@@ -2,7 +2,11 @@ package com.andonapp.client;
 
 import java.io.IOException;
 
+import com.andonapp.client.exception.AndonAppException;
+import com.andonapp.client.model.ErrorResponse;
 import com.andonapp.client.model.ReportDataRequest;
+import com.andonapp.client.model.SpringErrorResponse;
+import com.andonapp.client.model.UpdateStationStatusRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import okhttp3.HttpUrl;
@@ -19,8 +23,8 @@ public class AndonAppClient {
 	public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 	
 	private static final String DEFAULT_ENDPOINT = "https://portal.andonapp.com/public/api/v1";
-	private static final String REPORT_DATA = "data/report";
-	private static final String UPDATE_STATUS = "station/update";
+	private static final String REPORT_DATA_PATH = "data/report";
+	private static final String UPDATE_STATUS_PATH = "station/update";
 	
 	private OkHttpClient httpClient;
 	private ObjectMapper objectMapper;
@@ -33,37 +37,64 @@ public class AndonAppClient {
 	}
 	
 	public AndonAppClient (String apiToken, OkHttpClient httpClient) {
-		// TODO verify params
+		Precondition.checkNotBlank(apiToken, "apiToken cannot be blank");
 		this.authHeaderValue = BEARER + apiToken;
-		this.httpClient = httpClient;
+		this.httpClient = Precondition.checkNotNull(httpClient, "httpClient cannot be null");
 		this.objectMapper = new ObjectMapper();
 		this.endpointUrl = HttpUrl.parse(DEFAULT_ENDPOINT);
 	}
 	
 	public void setEndpoint(String endpoint) {
+		Precondition.checkNotBlank(endpoint, "endpoint cannot be blank");
 		this.endpointUrl = HttpUrl.parse(endpoint);
 	}
 	
-	// TODO wrap exceptions
 	public void reportData(ReportDataRequest request) throws IOException {
+		executeRequest(request, REPORT_DATA_PATH);
+	}
+	
+	public void updateStationStatus(UpdateStationStatusRequest request) throws IOException {
+		executeRequest(request, UPDATE_STATUS_PATH);
+	}
+
+	private void executeRequest(Object request, String path) throws IOException {
+		Precondition.checkNotNull(request, "request cannot be null");
 		String requestString = objectMapper.writeValueAsString(request);
 		RequestBody body = RequestBody.create(JSON, requestString);
 		
 		Request httpRequest = new Request.Builder()
-			.url(createUrl(REPORT_DATA))
+			.url(createUrl(path))
 			.post(body)
 			.addHeader(AUTHORIZATION_HEADER, authHeaderValue)
 			.build();
 		
 		try (Response response = httpClient.newCall(httpRequest).execute()) {
 			if (!response.isSuccessful()) {
-				// TODO model exceptions
-				throw new RuntimeException(
-						String.format("ReportDataRequest failed. %s: %s", response.code(), response.body().string()));
+				processErrorResponse(response);
 			}
 		}
 	}
 	
+	private void processErrorResponse(Response response) throws IOException {
+		String responseBody = response.body().string();
+		
+		try {
+			ErrorResponse errorResponse = objectMapper.readValue(responseBody, ErrorResponse.class);
+			if (errorResponse.getErrorType() != null) {
+				Exceptions.throwFromErrorResponse(errorResponse);
+			} else {
+				SpringErrorResponse springResponse = objectMapper.readValue(responseBody, SpringErrorResponse.class);
+				Exceptions.throwFromSpringErrorResponse(springResponse);
+			}
+		} catch (IOException e) {
+			throw new AndonAppException(
+					String.format("Status %s: %s", response.code(), responseBody), e);
+		}
+		
+		throw new AndonAppException(
+				String.format("Status %s: %s", response.code(), responseBody));
+	}
+
 	private HttpUrl createUrl(String path) {
 		return endpointUrl.newBuilder().addPathSegments(path).build();
 	}
