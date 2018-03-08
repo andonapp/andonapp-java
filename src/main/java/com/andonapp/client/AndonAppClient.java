@@ -16,6 +16,22 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * Client for making requests to Andon. In order to use the client you must generate
+ * an API token on the org settings page within Andon.
+ * 
+ * <p>The following is an example usage: <pre> {@code
+ *
+ *   AndonAppClient andonClient = new AndonAppClient(apiToken);
+ *   andonClient.reportData(ReportDataRequest.builder()
+ *           .orgName("Demo")
+ *           .lineName("line 1")
+ *           .stationName("station 1")
+ *           .passResult("PASS")
+ *           .processTimeSeconds(120L)
+ *           .build());
+ * }</pre>
+ */
 public class AndonAppClient {
 
 	private static final String AUTHORIZATION_HEADER = "Authorization";
@@ -32,10 +48,21 @@ public class AndonAppClient {
 	private HttpUrl endpointUrl;
 	private String authHeaderValue;
 	
+	/**
+	 * Constructs a new Andon client using a default HTTP client.
+	 * 
+	 * @param apiToken
+	 */
 	public AndonAppClient (String apiToken) {
 		this(apiToken, new OkHttpClient());
 	}
 	
+	/**
+	 * Constructs a new Andon client using a custom HTTP client.
+	 * 
+	 * @param apiToken
+	 * @param httpClient
+	 */
 	public AndonAppClient (String apiToken, OkHttpClient httpClient) {
 		Precondition.checkNotBlank(apiToken, "apiToken cannot be blank");
 		this.authHeaderValue = BEARER + apiToken;
@@ -44,15 +71,69 @@ public class AndonAppClient {
 		this.endpointUrl = HttpUrl.parse(DEFAULT_ENDPOINT);
 	}
 	
+	/**
+	 * Changes the endpoint that requests are made to.
+	 * 
+	 * @param endpoint
+	 */
 	public void setEndpoint(String endpoint) {
 		Precondition.checkNotBlank(endpoint, "endpoint cannot be blank");
 		this.endpointUrl = HttpUrl.parse(endpoint);
 	}
 	
+	/**
+	 * Reports the outcome of a process at a station to Andon.
+	 * 
+	 * <p>The following is an example usage: <pre> {@code
+	 *
+	 *   andonClient.reportData(ReportDataRequest.builder()
+	 *           .orgName("Demo")
+	 *           .lineName("line 1")
+	 *           .stationName("station 1")
+	 *           .passResult("FAIL")
+	 *           .failReason("Test Failure")
+	 *           .failNotes("notes")
+	 *           .processTimeSeconds(120L)
+	 *           .build());
+	 * }</pre>
+	 * 
+	 * @param request
+	 * @throws IOException if there are problems connecting to Andon
+	 * @throws AndonAppException if there is a general request failure
+	 * @throws AndonBadRequestException if there is something wrong with the request
+	 * @throws AndonInternalErrorException if there is a failure within Andon
+	 * @throws AndonInvalidRequestException if there are invalid request arguments
+	 * @throws AndonResourceNotFoundException if a referenced station can't be found
+	 * @throws AndonUnauthorizedRequestException if authorization fails
+	 */
 	public void reportData(ReportDataRequest request) throws IOException {
 		executeRequest(request, REPORT_DATA_PATH);
 	}
-	
+
+	/**
+	 * Changes the status of a station in Andon.
+	 * 
+	 * <p>The following is an example usage: <pre> {@code
+	 *
+	 *   andonClient.updateStationStatus(UpdateStationStatusRequest.builder()
+	 *           .orgName("Demo")
+	 *           .lineName("line 1")
+	 *           .stationName("station 1")
+	 *           .statusColor("YELLOW")
+	 *           .statusReason("Missing parts")
+	 *           .statusNotes("notes")
+	 *           .build());
+	 * }</pre>
+	 * 
+	 * @param request
+	 * @throws IOException if there are problems connecting to Andon
+	 * @throws AndonAppException if there is a general request failure
+	 * @throws AndonBadRequestException if there is something wrong with the request
+	 * @throws AndonInternalErrorException if there is a failure within Andon
+	 * @throws AndonInvalidRequestException if there are invalid request arguments
+	 * @throws AndonResourceNotFoundException if a referenced station can't be found
+	 * @throws AndonUnauthorizedRequestException if authorization fails
+	 */
 	public void updateStationStatus(UpdateStationStatusRequest request) throws IOException {
 		executeRequest(request, UPDATE_STATUS_PATH);
 	}

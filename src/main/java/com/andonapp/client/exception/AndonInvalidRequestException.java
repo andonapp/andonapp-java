@@ -1,5 +1,8 @@
 package com.andonapp.client.exception;
 
+/**
+ * Exception when a request to Andon fails because one of the inputs is invalid.
+ */
 public class AndonInvalidRequestException extends AndonAppException {
 
 	private static final long serialVersionUID = -7609652639321817105L;

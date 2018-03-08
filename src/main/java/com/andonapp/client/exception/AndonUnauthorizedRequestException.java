@@ -1,5 +1,8 @@
 package com.andonapp.client.exception;
 
+/**
+ * Exception when a request to Andon fails because it's unauthorized.
+ */
 public class AndonUnauthorizedRequestException extends AndonAppException {
 
 	private static final long serialVersionUID = -4282010568019737039L;

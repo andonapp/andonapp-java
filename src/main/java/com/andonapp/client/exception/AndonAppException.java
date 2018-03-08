@@ -1,5 +1,8 @@
 package com.andonapp.client.exception;
 
+/**
+ * Generic catch-all exception when a request to Andon fails.
+ */
 public class AndonAppException extends RuntimeException {
 
 	private static final long serialVersionUID = 3462127017595785569L;

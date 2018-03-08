@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Request object for reporting process data.
+ */
 @Builder
 @ToString
 @Getter
@@ -20,18 +23,39 @@ import lombok.ToString;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReportDataRequest {
 
+	/**
+	 * Name of the organization. Cannot be null.
+	 */
 	private String orgName;
 	
+	/**
+	 * Name of the line. Cannot be null.
+	 */
 	private String lineName;
 	
+	/**
+	 * Name of the station. Cannot be null.
+	 */
 	private String stationName;
 	
+	/**
+	 * Must be 'PASS' or 'FAIL'.
+	 */
 	private String passResult;
 	
+	/**
+	 * Time in seconds spent processing. Cannot be null.
+	 */
 	private Long processTimeSeconds;
 	
+	/**
+	 * Reason of failure. Null on success.
+	 */
 	private String failReason;
 	
+	/**
+	 * Freeform notes on failure. Maybe be null, depending on org settings.
+	 */
 	private String failNotes;
 	
 }

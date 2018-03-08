@@ -1,5 +1,9 @@
 package com.andonapp.client.exception;
 
+/**
+ * Exception when a request to Andon fails because a referenced resource
+ * (such as a station) can't be found in the system.
+ */
 public class AndonResourceNotFoundException extends AndonAppException {
 
 	private static final long serialVersionUID = 9142554095875911027L;

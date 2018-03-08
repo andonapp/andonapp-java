@@ -1,5 +1,9 @@
 package com.andonapp.client.exception;
 
+/**
+ * Generic exception when a request to Andon fails because there's something wrong
+ * within Andon.
+ */
 public class AndonInternalErrorException extends AndonAppException {
 
 	private static final long serialVersionUID = 1990102739578050575L;
