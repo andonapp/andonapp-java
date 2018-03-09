@@ -22,9 +22,8 @@ import okhttp3.Response;
  * 
  * <p>The following is an example usage: <pre> {@code
  *
- *   AndonAppClient andonClient = new AndonAppClient(apiToken);
+ *   AndonAppClient andonClient = new AndonAppClient(orgName, apiToken);
  *   andonClient.reportData(ReportDataRequest.builder()
- *           .orgName("Demo")
  *           .lineName("line 1")
  *           .stationName("station 1")
  *           .passResult("PASS")
@@ -45,25 +44,29 @@ public class AndonAppClient {
 	private OkHttpClient httpClient;
 	private ObjectMapper objectMapper;
 	
+	private String orgName;
 	private HttpUrl endpointUrl;
 	private String authHeaderValue;
 	
 	/**
 	 * Constructs a new Andon client using a default HTTP client.
 	 * 
+	 * @param orgName
 	 * @param apiToken
 	 */
-	public AndonAppClient (String apiToken) {
-		this(apiToken, new OkHttpClient());
+	public AndonAppClient (String orgName, String apiToken) {
+		this(orgName, apiToken, new OkHttpClient());
 	}
 	
 	/**
 	 * Constructs a new Andon client using a custom HTTP client.
 	 * 
+	 * @param orgName
 	 * @param apiToken
 	 * @param httpClient
 	 */
-	public AndonAppClient (String apiToken, OkHttpClient httpClient) {
+	public AndonAppClient (String orgName, String apiToken, OkHttpClient httpClient) {
+		this.orgName = Precondition.checkNotBlank(orgName, "orgName cannot be blank");
 		Precondition.checkNotBlank(apiToken, "apiToken cannot be blank");
 		this.authHeaderValue = BEARER + apiToken;
 		this.httpClient = Precondition.checkNotNull(httpClient, "httpClient cannot be null");
@@ -87,7 +90,6 @@ public class AndonAppClient {
 	 * <p>The following is an example usage: <pre> {@code
 	 *
 	 *   andonClient.reportData(ReportDataRequest.builder()
-	 *           .orgName("Demo")
 	 *           .lineName("line 1")
 	 *           .stationName("station 1")
 	 *           .passResult("FAIL")
@@ -107,6 +109,7 @@ public class AndonAppClient {
 	 * @throws AndonUnauthorizedRequestException if authorization fails
 	 */
 	public void reportData(ReportDataRequest request) throws IOException {
+		request.setOrgName(orgName);
 		executeRequest(request, REPORT_DATA_PATH);
 	}
 
@@ -116,7 +119,6 @@ public class AndonAppClient {
 	 * <p>The following is an example usage: <pre> {@code
 	 *
 	 *   andonClient.updateStationStatus(UpdateStationStatusRequest.builder()
-	 *           .orgName("Demo")
 	 *           .lineName("line 1")
 	 *           .stationName("station 1")
 	 *           .statusColor("YELLOW")
@@ -135,6 +137,7 @@ public class AndonAppClient {
 	 * @throws AndonUnauthorizedRequestException if authorization fails
 	 */
 	public void updateStationStatus(UpdateStationStatusRequest request) throws IOException {
+		request.setOrgName(orgName);
 		executeRequest(request, UPDATE_STATUS_PATH);
 	}
 

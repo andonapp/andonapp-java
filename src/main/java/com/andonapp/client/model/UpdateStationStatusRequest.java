@@ -24,7 +24,7 @@ import lombok.ToString;
 public class UpdateStationStatusRequest {
 
 	/**
-	 * Name of the organization. Cannot be null.
+	 * Name of the organization. Will be automatically supplied in the client.
 	 */
 	private String orgName;
 	

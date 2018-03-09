@@ -40,12 +40,14 @@ public class AndonAppClientTest {
 	
 	private ObjectMapper objectMapper;
 	
+	private String orgName = "Demo";
+	
 	@Before
 	public void before() throws IOException {
 		server = new MockWebServer();
 		server.start();
 		
-		client = new AndonAppClient(API_TOKEN);
+		client = new AndonAppClient(orgName, API_TOKEN);
 		client.setEndpoint(server.url("/").toString());
 		
 		objectMapper = new ObjectMapper();
@@ -57,15 +59,21 @@ public class AndonAppClientTest {
 	}
 	
 	@Test
+	public void shouldThrowExceptionWhenOrgNameBlank() {
+		exception.expect(IllegalArgumentException.class);
+		new AndonAppClient("", API_TOKEN);
+	}
+	
+	@Test
 	public void shouldThrowExceptionWhenApiTokenBlank() {
 		exception.expect(IllegalArgumentException.class);
-		new AndonAppClient("");
+		new AndonAppClient(orgName, "");
 	}
 	
 	@Test
 	public void shouldThrowExceptionWhenHttpClientNull() {
 		exception.expect(IllegalArgumentException.class);
-		new AndonAppClient(API_TOKEN, null);
+		new AndonAppClient(orgName, API_TOKEN, null);
 	}
 	
 	@Test
@@ -73,7 +81,6 @@ public class AndonAppClientTest {
 		expectSuccess();
 		
 		ReportDataRequest request = ReportDataRequest.builder()
-			.orgName("Demo")
 			.lineName("line 1")
 			.stationName("station 1")
 			.passResult("PASS")
@@ -90,7 +97,6 @@ public class AndonAppClientTest {
 		expectSuccess();
 		
 		ReportDataRequest request = ReportDataRequest.builder()
-				.orgName("Demo")
 				.lineName("line 1")
 				.stationName("station 1")
 				.passResult("FAIL")
@@ -105,11 +111,10 @@ public class AndonAppClientTest {
 	}
 	
 	@Test
-	public void shouldThrowExceptionWhenReportDataMissingOrgName() throws Exception {
-		expectFailure(400, new ErrorResponse("INVALID_REQUEST", "orgName may not be empty"));
+	public void shouldThrowExceptionWhenReportDataMissingLineName() throws Exception {
+		expectFailure(400, new ErrorResponse("INVALID_REQUEST", "lineName may not be empty"));
 		
 		ReportDataRequest request = ReportDataRequest.builder()
-				.lineName("line 1")
 				.stationName("station 1")
 				.passResult("PASS")
 				.processTimeSeconds(100L)
@@ -119,7 +124,7 @@ public class AndonAppClientTest {
 			client.reportData(request);
 			fail("no exception was thrown");
 		} catch (AndonInvalidRequestException e) {
-			assertEquals("orgName may not be empty", e.getMessage());
+			assertEquals("lineName may not be empty", e.getMessage());
 			verifyRequest(request, server.takeRequest());
 		}
 	}
@@ -129,7 +134,6 @@ public class AndonAppClientTest {
 		expectFailure(400, new ErrorResponse("RESOURCE_NOT_FOUND", "Station not found."));
 		
 		ReportDataRequest request = ReportDataRequest.builder()
-				.orgName("Demo")
 				.lineName("line 1")
 				.stationName("station 2")
 				.passResult("PASS")
@@ -150,7 +154,6 @@ public class AndonAppClientTest {
 		expectFailure(400, new ErrorResponse("INVALID_REQUEST", "'PAS' is not a valid pass result."));
 		
 		ReportDataRequest request = ReportDataRequest.builder()
-				.orgName("Demo")
 				.lineName("line 1")
 				.stationName("station 1")
 				.passResult("PAS")
@@ -173,7 +176,6 @@ public class AndonAppClientTest {
 						"Unauthorized", "Unauthorized", "/public/api/v1/data/report"));
 		
 		ReportDataRequest request = ReportDataRequest.builder()
-				.orgName("Demo")
 				.lineName("line 1")
 				.stationName("station 1")
 				.passResult("PAS")
@@ -194,7 +196,6 @@ public class AndonAppClientTest {
 		expectFailure(400, "{}");
 		
 		ReportDataRequest request = ReportDataRequest.builder()
-				.orgName("Demo")
 				.lineName("line 1")
 				.stationName("station 1")
 				.passResult("PAS")
@@ -215,7 +216,6 @@ public class AndonAppClientTest {
 		expectSuccess();
 		
 		UpdateStationStatusRequest request = UpdateStationStatusRequest.builder()
-				.orgName("Demo")
 				.lineName("line 1")
 				.stationName("station 1")
 				.statusColor("YELLOW")
@@ -233,7 +233,6 @@ public class AndonAppClientTest {
 		expectSuccess();
 		
 		UpdateStationStatusRequest request = UpdateStationStatusRequest.builder()
-				.orgName("Demo")
 				.lineName("line 1")
 				.stationName("station 1")
 				.statusColor("GREEN")

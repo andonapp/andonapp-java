@@ -31,7 +31,7 @@ Make sure to record the token, and keep it secret.
 Now that you have a token, create a client as follows:
 
 ```java
-AndonAppClient andonClient = new AndonAppClient(apiToken);
+AndonAppClient andonClient = new AndonAppClient(orgName, apiToken);
 ```
 
 If you need custom HTTP client settings you can use the alternate constructor, and supply a pre-configured HTTP client.
@@ -42,7 +42,6 @@ Here's an example of using the client to report a success:
 
 ```java
 andonClient.reportData(ReportDataRequest.builder()
-		.orgName("Demo")
 		.lineName("line 1")
 		.stationName("station 1")
 		.passResult("PASS")
@@ -54,7 +53,6 @@ And a failure:
 
 ```java
 andonClient.reportData(ReportDataRequest.builder()
-		.orgName("Demo")
 		.lineName("line 1")
 		.stationName("station 1")
 		.passResult("FAIL")
@@ -70,7 +68,6 @@ Here's an example of flipping a station to Red:
 
 ```java
 andonClient.updateStationStatus(UpdateStationStatusRequest.builder()
-		.orgName("Demo")
 		.lineName("line 1")
 		.stationName("station 1")
 		.statusColor("RED")
@@ -83,7 +80,6 @@ And back to Green:
 
 ```java
 andonClient.updateStationStatus(UpdateStationStatusRequest.builder()
-		.orgName("Demo")
 		.lineName("line 1")
 		.stationName("station 1")
 		.statusColor("GREEN")
