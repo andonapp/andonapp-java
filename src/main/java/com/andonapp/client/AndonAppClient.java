@@ -2,7 +2,7 @@ package com.andonapp.client;
 
 import java.io.IOException;
 
-import com.andonapp.client.exception.AndonAppException;
+import com.andonapp.client.exception.*;
 import com.andonapp.client.model.ErrorResponse;
 import com.andonapp.client.model.ReportDataRequest;
 import com.andonapp.client.model.SpringErrorResponse;
@@ -51,8 +51,8 @@ public class AndonAppClient {
 	/**
 	 * Constructs a new Andon client using a default HTTP client.
 	 * 
-	 * @param orgName
-	 * @param apiToken
+	 * @param orgName name of the organization
+	 * @param apiToken API token for the organization
 	 */
 	public AndonAppClient (String orgName, String apiToken) {
 		this(orgName, apiToken, new OkHttpClient());
@@ -61,9 +61,9 @@ public class AndonAppClient {
 	/**
 	 * Constructs a new Andon client using a custom HTTP client.
 	 * 
-	 * @param orgName
-	 * @param apiToken
-	 * @param httpClient
+	 * @param orgName name of the organization
+	 * @param apiToken API token for the organization
+	 * @param httpClient client to use to connect to Andon
 	 */
 	public AndonAppClient (String orgName, String apiToken, OkHttpClient httpClient) {
 		this.orgName = Precondition.checkNotBlank(orgName, "orgName cannot be blank");
@@ -77,7 +77,7 @@ public class AndonAppClient {
 	/**
 	 * Changes the endpoint that requests are made to.
 	 * 
-	 * @param endpoint
+	 * @param endpoint Andon endpoint to connect to
 	 */
 	public void setEndpoint(String endpoint) {
 		Precondition.checkNotBlank(endpoint, "endpoint cannot be blank");
@@ -99,7 +99,7 @@ public class AndonAppClient {
 	 *           .build());
 	 * }</pre>
 	 * 
-	 * @param request
+	 * @param request ReportDataRequest
 	 * @throws IOException if there are problems connecting to Andon
 	 * @throws AndonAppException if there is a general request failure
 	 * @throws AndonBadRequestException if there is something wrong with the request
@@ -127,7 +127,7 @@ public class AndonAppClient {
 	 *           .build());
 	 * }</pre>
 	 * 
-	 * @param request
+	 * @param request UpdateStationStatusRequest
 	 * @throws IOException if there are problems connecting to Andon
 	 * @throws AndonAppException if there is a general request failure
 	 * @throws AndonBadRequestException if there is something wrong with the request
