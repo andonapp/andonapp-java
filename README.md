@@ -10,14 +10,14 @@ Get the client via Maven:
 <dependency>
   <groupId>com.andonapp</groupId>
   <artifactId>andonapp</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
 </dependency>
 ```
 
 or Gradle:
 
 ```gradle
-compile 'com.andonapp:andonapp:1.0.0'
+compile 'com.andonapp:andonapp:1.0.1'
 ```
 
 ## Usage
@@ -31,7 +31,7 @@ Reference Andon's [getting started guide](https://drive.google.com/file/d/0B5cQI
 Now that you have a token, create a client as follows:
 
 ```java
-AndonAppClient andonClient = new AndonAppClient(orgName, apiToken);
+AndonAppClient andonClient = new DefaultAndonAppClient(orgName, apiToken);
 ```
 
 If you need custom HTTP client settings you can use the alternate constructor, and supply a pre-configured HTTP client.
@@ -83,6 +83,7 @@ andonClient.updateStationStatus(UpdateStationStatusRequest.builder()
 		.lineName("line 1")
 		.stationName("station 1")
 		.statusColor("GREEN")
+		.statusNotes("notes")
 		.build());
 ```
 

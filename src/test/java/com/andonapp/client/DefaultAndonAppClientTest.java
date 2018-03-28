@@ -26,7 +26,7 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 
-public class AndonAppClientTest {
+public class DefaultAndonAppClientTest {
 
 	private static final String AUTHORIZATION_HEADER = "Authorization";
 	private static final String API_TOKEN = "api-token";
@@ -36,7 +36,7 @@ public class AndonAppClientTest {
 	
 	private MockWebServer server;
 	
-	private AndonAppClient client;
+	private DefaultAndonAppClient client;
 	
 	private ObjectMapper objectMapper;
 	
@@ -47,7 +47,7 @@ public class AndonAppClientTest {
 		server = new MockWebServer();
 		server.start();
 		
-		client = new AndonAppClient(orgName, API_TOKEN);
+		client = new DefaultAndonAppClient(orgName, API_TOKEN);
 		client.setEndpoint(server.url("/").toString());
 		
 		objectMapper = new ObjectMapper();
@@ -61,19 +61,19 @@ public class AndonAppClientTest {
 	@Test
 	public void shouldThrowExceptionWhenOrgNameBlank() {
 		exception.expect(IllegalArgumentException.class);
-		new AndonAppClient("", API_TOKEN);
+		new DefaultAndonAppClient("", API_TOKEN);
 	}
 	
 	@Test
 	public void shouldThrowExceptionWhenApiTokenBlank() {
 		exception.expect(IllegalArgumentException.class);
-		new AndonAppClient(orgName, "");
+		new DefaultAndonAppClient(orgName, "");
 	}
 	
 	@Test
 	public void shouldThrowExceptionWhenHttpClientNull() {
 		exception.expect(IllegalArgumentException.class);
-		new AndonAppClient(orgName, API_TOKEN, null);
+		new DefaultAndonAppClient(orgName, API_TOKEN, null);
 	}
 	
 	@Test
