@@ -24,7 +24,7 @@ compile 'com.andonapp:andonapp:1.0.1'
 
 In order to programmatically connect to Andon's APIs you must first generate an API token. This is done by logging into your Andon account, navigating to the [API settings page](https://portal.andonapp.com/settings/tokens), and generating a new token.  Make sure to record the token, and keep it secret.
 
-Reference Andon's [getting started guide](https://drive.google.com/file/d/0B5cQI3VvgCT8UllmaENIazlwbGc/view) and [API guide](https://drive.google.com/file/d/0B5cQI3VvgCT8enNIZGN2QVo0STg/view) for complete details on these prerequisites
+Reference Andon's [getting started guide](https://www.andonapp.com/support/createorg) and [API guide](https://www.andonapp.com/support/usingapi/) for complete details on these prerequisites
 
 ### Setting up the Client
 
